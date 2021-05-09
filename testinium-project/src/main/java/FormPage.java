@@ -1,13 +1,8 @@
-import net.bytebuddy.asm.Advice;
-import org.junit.Assert;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
-import org.openqa.selenium.support.ui.Select;
 
-import java.util.List;
 import java.util.Random;
-import java.util.logging.Logger;
 
 public class FormPage extends BasePage {
 
@@ -25,12 +20,13 @@ public class FormPage extends BasePage {
     private final By totalProductPath = new By.ByCssSelector("li[class='clearfix total-price-sticky-container']>:nth-child(1)");
     private final By textProductH2Path = By.xpath("//*[@id='empty-cart-container']/div[1]/div[1]/div/div[2]/h2");
     private final By productPriceBasketPath = new By.ByCssSelector("div[class='total-price']");
+    private final By productPricePath = By.id("sp-price-highPrice");
     private final String baseUrl = "https://www.gittigidiyor.com";
     private final String email = "muraaddag@gmail.com";
     private final String password = "Testinium_2021";
     private final String userName = "muratdag245861";
     private String productPrice = "";
-    private final String basketControlText = "Sepetinizde ürün bulunmamaktadır.";;
+    private final String basketControlText = "Sepetinizde ürün bulunmamaktadır.";
     Actions action = new Actions(driver);
 
 
@@ -45,7 +41,7 @@ public class FormPage extends BasePage {
 
         WebElement divLogin = this.driver.findElement(divLoginPath);
         action.moveToElement(divLogin).perform();
-        Thread.sleep(500);
+        Thread.sleep(2500);
         this.driver.get("https://www.gittigidiyor.com/uye-girisi");
 
         // Login İşlemi
@@ -53,26 +49,29 @@ public class FormPage extends BasePage {
         WebElement loginEmailInput = this.driver.findElement(loginEmailPath);
         WebElement loginPasswordInput = this.driver.findElement(loginPasswordPath);
         WebElement loginButton = this.driver.findElement(loginButtonPath);
-        Thread.sleep(500);
+        Thread.sleep(1500);
         loginEmailInput.sendKeys(email);
+        Thread.sleep(1500);
         loginPasswordInput.sendKeys(password);
-        Thread.sleep(500);
+        Thread.sleep(1500);
         loginButton.click();
 
         String loginControl = this.driver.findElement(userNamePath).getText();
         if (loginControl.equals(userName)) {
             logger.info("Giriş İşlemi Başarılı !");
-        } else
-        { logger.warning("Giriş İşlemi Başarısız !"); }
+        } else {
+            logger.warn("Giriş İşlemi Başarısız !");
+        }
     }
 
-    public void searchProduct(WebDriver driver,Logger logger) throws InterruptedException {
+    public void searchProduct(WebDriver driver, org.apache.log4j.Logger logger) throws InterruptedException {
         WebElement searchInput = driver.findElement(searchInputPath);
         WebElement searchButton = driver.findElement(searchButtonPath);
-
+        Thread.sleep(1500);
         searchInput.sendKeys("bilgisayar");
+        Thread.sleep(1500);
         searchButton.click();
-        Thread.sleep(500);
+        Thread.sleep(2500);
 
         String secondPageLink = driver.findElement(secondPageButtonPath).getAttribute("href");
         driver.get(secondPageLink);
@@ -81,64 +80,61 @@ public class FormPage extends BasePage {
         if (secondPageButton.equals("current")) {
             logger.info("Arama işlemi başarılı !");
         } else {
-            logger.warning("Ürün sayfasındaki fiyat ve Sepetteki ürün fiyatı eşit !");
+            logger.warn("Ürün sayfasındaki fiyat ve Sepetteki ürün fiyatı eşit !");
         }
     }
 
-    public void addProductToBasket(WebDriver driver,Logger logger) throws InterruptedException {
+    public void addProductToBasket(WebDriver driver, org.apache.log4j.Logger logger) throws InterruptedException {
         Random random = new Random();
         int randomProductIndex = random.nextInt(48);
         WebElement selectedProduct = driver.findElement(By.xpath("//div[@class='clearfix']/ul[@class='catalog-view clearfix products-container']/li[" + randomProductIndex + "]/a[@class='product-link']"));
+       Thread.sleep(2000);
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", selectedProduct);
-        Thread.sleep(1500);
+        Thread.sleep(2000);
 
 
         selectedProduct.click();
-        Thread.sleep(500);
+        Thread.sleep(2500);
         WebElement addProductToBasketButton = driver.findElement(addProductToBasketButtonPath);
-        productPrice = driver.findElement(By.id("sp-price-highPrice")).getText();
-
-        Thread.sleep(1500);
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", addProductToBasketButton);
-
-        addProductToBasketButton.click();
+        productPrice = driver.findElement(productPricePath).getText();
         Thread.sleep(2000);
+        addProductToBasketButton.click();
+        Thread.sleep(300);
         driver.get(baseUrl + "/sepetim");
-        Thread.sleep(1000);
+        Thread.sleep(2500);
         String productPriceBasket = driver.findElement(productPriceBasketPath).getText();
-
         if (productPrice.equals(productPriceBasket)) {
             logger.info("Ürün sayfasındaki fiyat ve Sepetteki ürün fiyatı eşit !");
         } else {
-            logger.warning("Ürün sayfasındaki fiyat ve Sepetteki ürün fiyatı eşit değil !");
+            logger.warn("Ürün sayfasındaki fiyat ve Sepetteki ürün fiyatı eşit değil !");
         }
     }
 
-    public void increaseProduct(WebDriver driver,Logger logger) throws InterruptedException {
-        Thread.sleep(2000);
+    public void increaseProduct(WebDriver driver, org.apache.log4j.Logger logger) throws InterruptedException {
+        Thread.sleep(2500);
         WebElement increaseProductButton = driver.findElement(increaseProductButtonPath);
         increaseProductButton.click();
-        Thread.sleep(1000);
+        Thread.sleep(2500);
         String totalProduct = driver.findElement(totalProductPath).getText();
 
         if (totalProduct.equals("Ürün Toplamı (2 Adet)")) {
             logger.info("Arttırma işlemi başarılı !");
         } else {
-            logger.warning("Arttırma işlemi başarısız !");
+            logger.warn("Arttırma işlemi başarısız !");
         }
     }
 
-    public void deleteProduct(WebDriver driver,Logger logger) throws InterruptedException {
-        Thread.sleep(1500);
+    public void deleteProduct(WebDriver driver, org.apache.log4j.Logger logger) throws InterruptedException {
+        Thread.sleep(2500);
         WebElement deleteProductButton = driver.findElement(deleteProductButtonPath);
         deleteProductButton.click();
-        Thread.sleep(1000);
+        Thread.sleep(2000);
         String textProductH2 = driver.findElement(textProductH2Path).getText();
-        if(textProductH2.equals(basketControlText)){
+        if (textProductH2.equals(basketControlText)) {
             logger.info(textProductH2);
-        }
-        else{
-            logger.warning("Sepetiniz boş değil !");
+        } else {
+            logger.warn("Sepetiniz boş değil !");
         }
     }
 

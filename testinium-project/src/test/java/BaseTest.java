@@ -1,16 +1,15 @@
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import java.util.logging.Logger;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class BaseTest {
 
-    public final Logger logger = Logger.getLogger(String.valueOf(BaseTest.class));
+    public final Logger logger = Logger.getLogger(BaseTest.class);
 
     protected WebDriver driver;
     FormPage formPage;
